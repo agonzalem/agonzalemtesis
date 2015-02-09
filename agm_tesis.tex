@@ -1,0 +1,102 @@
+\documentclass[letter,12pt]{book}
+\voffset=-36pt
+\marginparsep=20pt
+\textwidth 6.0in
+\textheight 8.75in
+\oddsidemargin 0.4in
+\evensidemargin 0in
+%paquetes
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{subfig}
+\usepackage[pdftex,colorlinks=true,bookmarks=true,linkcolor=black,urlcolor=black,citecolor=black]{hyperref}
+% \usepackage{anysize}% Permite emplear cualquier medida de márgenes. 
+% \usepackage{titlesec}%estilo de secciones, títulos ....
+% \usepackage[usenames]{color}
+% \usepackage{graphicx}
+\usepackage[dvips]{graphicx}
+% \usepackage{fancyhdr}% manipulación de encabezados y pie de pagina
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{array,color}
+\usepackage{booktabs}
+% \usepackage{color}
+\usepackage[neverdecrease]{paralist}
+\usepackage{array}
+\usepackage{listings}
+\usepackage[nottoc]{tocbibind}
+\usepackage{datetime}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage[ruled]{algorithm}
+
+%definiciones
+\floatname{algorithm}{Algoritmo}
+\renewcommand\tocbibname{Referencias}
+
+%\providecommand*{\monthnamespanish}[1]{%
+\renewcommand{\monthnamespanish}[1][\month]{%
+\ifcase#1\relax
+\or Enero%
+\or Febrero%
+\or Marzo%
+\or Abril%
+\or Mayo%
+\or Junio%
+\or Julio%
+\or Agosto%
+\or Septiembre%
+\or Octubre%
+\or Noviembre%
+\or Diciembre%
+\fi}
+
+\newdateformat{mydate}{\monthname[\THEMONTH] de \THEYEAR}
+% \definecolor{Black}{rgb}{0,0,0}
+\newcommand{\zespacio}{\linebreak \linebreak}
+\newcommand{\despacio}{\linebreak \linebreak \linebreak}
+\newcommand{\vespacio}{\linebreak \linebreak \linebreak \linebreak}
+\newcommand{\fespacio}{\linebreak \linebreak \linebreak \linebreak \linebreak}
+
+% %estilo de pagina
+% \fancyhf{}
+% \pagestyle{fancy}
+% \fancyfoot[R]{\thepage}%alineación del pie
+% %\fancyhead[OE]{\fancyhead}%alineación del encabezado
+% %otros
+%\selectspanish
+% \marginsize{2.0cm}{2.0cm}{2.0cm}{2.0cm}% Controla los márgenes {izquierda}{derecha}{arriba}{abajo}.
+%\colorbox{color}{texto} % remarcar texto con color
+
+\newcommand\barra{\hrule height 2pt}
+
+\title{Idónea Comunicación de Resultados}
+\author{Angel González Méndez}
+\date{2014-09-01}
+
+\begin{document}
+	\frontmatter
+ 	\addtocontents{toc}{\barra}
+ 	\include{portada}
+ 	\textwidth 6.0in
+ 	\oddsidemargin 0.4in
+	\include{resumen}
+	\addtocontents{lot}{\barra}
+ 	\addtocontents{lof}{\barra}
+	\tableofcontents
+	\cleardoublepage
+%	\addcontentsline{toc}{chapter}{Lista de figuras} % para que aparezca en el indice de contenidos
+	\listoffigures % indice de figuras
+%	\cleardoublepage
+%	\addcontentsline{toc}{chapter}{Lista de tablas} % para que aparezca en el indice de contenidos
+%	\listoftables % indice de tablas
+	\mainmatter
+	\include{introduccion}
+	%\include{modelo}
+	\include{trabajorelacionado}
+	\include{redesporosasrg}
+	\include{propuestaparalela}
+	\include{resultados}
+	\include{conclusiones}
+	\include{referencias}
+\end{document}

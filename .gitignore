@@ -1,0 +1,10 @@
+*.aux
+*.pdf
+*.gz
+*.log
+*.lof
+*.out
+*.err
+*.toc
+imagenes/
+*.DS_Store
