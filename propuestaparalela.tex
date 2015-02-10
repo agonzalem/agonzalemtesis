@@ -3,7 +3,7 @@
 \bigskip
 \barra
 \bigskip
-En este capítulo se describe la implementación paralela de los algoritmos descritos en el capítulo \ref{champ:BSGR} para la creación de redes porosas sujetas a Restricciones Geométricas. Las implementaciones paralelas trabajan sobre el modelo  de memoria compartida, donde varios hilos cooperan en la construcción de una red porosa válida siguiendo los principales pasos de los algoritmo presentados en el capítulo anterior. El primer paso para las dos soluciones paralelas es la distribución espacial de la red entre los hilos después viene la inicalizaci\'on y por \'ultimo la generación una red porosa v\'alida.
+En este capítulo se describe la implementación paralela de los algoritmos descritos en el capítulo \ref{champ:BSGR} para la creación de redes porosas sujetas a Restricciones Geométricas. Las implementaciones paralelas trabajan sobre el modelo  de memoria compartida, donde varios hilos cooperan en la construcción de una red porosa válida siguiendo los principales pasos de los algoritmo presentados en el capítulo anterior. El primer paso para las dos soluciones paralelas es la distribución espacial de la red entre los hilos a utilizar dicha distribución es igual para para ambos algoritmos. Después de la distribución espacial de red cada algoritmo comenzara con su respectivo proceso construcci\'on (inicializaci\'on, eliminaci\'on de violaciones y mejoramiento de la isotrop\'ia). Durante el proceso de construcción cada hilo trabaja de forma paralela en una subred. Cabe recordar que la red porosa mantiene una topolog\'ia tipo toro.
 
 \section{Distribución de la red porosa}
 \label{sec:pdistribution}
@@ -39,21 +39,71 @@ En este paso una red porosa es dividida en $N$ subredes donde $N$ es el número 
 \end{figure}
 
 \section{Solución Paralela Aleatoria}
-
+\label{sec:pbiasedrg}
+%\label{subsec:painit}
 %\subsection{Inicialización}
 %\label{subsec:painit}
-
-%Una vez que la red porosa fue distribuida entre los $N$ hilos a utilizar utilizando el algoritmo descrito en la sección anterior, es decir la red porosa se dividió en $N$ suredes donde cada subred tiene un tamaño $L_x \cdot L_y \cdot L_z$ tal y como se muestra en la Figura \ref{fig:distribution}. De esta forma cada hilo trabajara de forma independiente sin necesidad de sincronizarse durante el proceso de inicalización, cada hilo insertara de forma aleatoria en su subred $L_x \cdot L_y \cdot L_z$ sitios hasta rellenar por completo la red, una vez que la red esta completamente inicializada con sitios a cada sitio se le asignara únicamente tres enlaces(izquierdo, trasero y superior) esto para evitar la sincronización entre los hilos.
-
-Una vez que la red porosa fue distribuida entre los $N$ hilos utilizando el algoritmo descrito en la sección anterior, cada hilo trabajara de forma independiente en una subred de tamaño $L_x \cdot L_y \cdot L_z$ tal y como se muestra en la Figura \ref{fig:distribution} sin necesidad de sincronizarse durante el proceso de inicalización.
-
-Cada hilo inserta de forma aleatoria en su subred $L_x \cdot L_y \cdot L_z$ sitios hasta rellenar por completo la red, una vez que la red esta completamente inicializada con sitios a cada sitio se le asignara únicamente tres enlaces(izquierdo, trasero y superior) esto para evitar la sincronización entre los hilos.
+Una vez que la red porosa fue distribuida entre los $N$ hilos utilizando el algoritmo descrito en la sección anterior entonces cada hilo trabajara de forma independiente en una subred de tamaño $L_x \cdot L_y \cdot L_z$ tal y como se muestra en la Figura \ref{fig:distribution} en la cual se muestra la distriuci\'on entre $8$ hilos de una red porosa. En el proceso de inicializaci\'on cada hilo inserta de forma aleatoria en su subred $L_x \cdot L_y \cdot L_z$ sitios hasta rellenar por completo la red, una vez que la red esta completamente inicializada con sitios a cada sitio se le asignara únicamente tres enlaces: izquierdo, trasero y superior. La asignación de dichos enlaces evita la sincronización entre los hilos durante el proceso de inicalización.
 
 \subsection{Generación de una Red Porosa Válida}
-\label{subsec:pavalid}
+\label{subsec:pbiasedrgvalid}
+Después de que la red porosa ha sido inicializada esta puede contener violaciones a las $RG$ ya que al igual que su respectiva versi\'on secuencial la inicializaci\'on no verifica el cumplimiento de las $RG$ para la eliminar las violaciones se aplica una serie de $MCs$ Paralelos. Cada $MCs$ Paralelo implica que cada hilo aplicara un $MCs$ normal tal y como se hace en el algoritmo descrito en la secci\'on \ref{sec:svalid} sobre su respectiva subred omitiendo las caras externas (lineas 5-10 del Algoritmo \ref{alg:pvalidnet}), al omitir las caras externas se evita la sincronizaci\'on durante cada $MCs$ Paralelo. Para que cada poro(sitio o enlace) de las caras externas de cada subred tenga la posibilidad de intercambiarse con otro se realizan desplazamientos lógicos a lo largo de los ejes $x$, $y$ y $z$ después de cada $MCs$ Paralelo(linea 17 del algoritmo \ref{alg:pvalidnet}) con dichos desplazamientos se logra que caras externas en un momento queden al interior de una subred. Al igual que en la versi\'on secuencial el los $MCs$ Paralelos se repetirán hasta eliminar por completo las violaciones a las $RG$. El comportamiento completo para la generación de una red porosa v\'alida se muestra en el algoritmo \ref{alg:pvalidnet}.\\
 
-\subsection{Mejoramiento de la isotropía}
-\label{subsec:paisotropy}
+En la Figura \ref{fig:shift} se muestra un red porosa distribuida entre dos hilos (Figura \ref{fig:shift1}) y un ejemplo de un desplazamiento lógico sobre $y$ (Figura \ref{fig:shift1}) en el cual se observa que las subredes sobre las cuales trabajaran los hilos han cambiado, esta una de las grandes ventajas de trabajar sobre memoria compartida ya que el tiempo que  toma un desplazamiento es totalmente despreciable ya que en ningún momento existe algún tipo de trasferencia física de los datos, al contrario de que si se utilizase memoria distribuida esta operación de desplazamiento se traduciría en trasferencia de datos entre nodos tal y como se comento en la Secci\'on \ref{subsec:algspar} lo cual podría trasformarse en un cuello de botella.\\
+
+\begin{algorithm}
+\caption{Esquema paralelo para generar una red porosa válida}\label{alg:pvalidnet}
+\begin{algorithmic}[1]
+\algblockdefx[NAME]{ompparallel}{eompparallel}
+    {\textbf{omp parallel private $(tid,nMCs,exchanges)$}}
+    {\textbf{end omp parallel}}    
+\algblockdefx[NAME2]{ompmaster}{eompmaster}
+    {\textbf{omp master}}
+    {\textbf{end omp master}}
+\Require $pnet$: red porosa
+\Require $dist$: Arreglo con la distribución de la red
+\State $continue \gets$ \Call{GRviolations}{$\&pnet$} $ > 0$
+\ompparallel
+	\State $tid \gets $ \Call{OmpGetTid}{ }
+	\State $nMCs=4(( dist[tid].L_x  - 2) \cdot (dist[tid].L_y - 2) \cdot (dist[tid].L_z - 2))^3$
+	\While{$continue$}
+		\State $exchanges \gets nMCs$
+		\While{$(exchanges--)> 0$}
+			\State \Call{PoreExchange}{$\&pnet,\&dist[tid]$}
+			\If{\Call{NonValidExchange}{$\&pnet,\&dist[tid]$}}
+				\State \Call{RejectExchange}{$pnet,dist[tid]$}
+			\EndIf
+		\EndWhile
+		
+		\State \textbf{omp barrier}
+		
+		\ompmaster
+			\State $continue \gets$ \Call{GRviolations}{$\&pnet$} $ > 0$		
+			\If{$continue$}
+				\State \Call{Shift}{$\&pnet,\&dist[tid]$} {$//$ desplazamiento sobre ($x,y,z$)}
+			\EndIf
+		\eompmaster
+
+		\State \textbf{omp barrier}
+	\EndWhile
+\eompparallel
+\end{algorithmic}
+\end{algorithm}
+
+\begin{figure}[hbtp]
+\centering
+\begin{tabular}{cc}
+\subfloat[Distribución inicial]{
+\includegraphics[width=2.5in, viewport=0  285 310 555,clip]{img/shift}
+\label{fig:shift1}
+}
+& \subfloat[Desplazamiento sobre $y$]{
+\includegraphics[width=2.5in, viewport=0 0 310 270,clip]{img/shift}
+\label{fig:shift2}}
+\end{tabular}
+\caption{Ejemplo de un desplazamiento lógico (a) Posición inicial, (b) desplazamiento sobre $y$}
+\label{fig:shift}
+\end{figure}
 
 \section{Solución Paralela Híbrida}
 \subsection{Inicialización}
@@ -135,17 +185,17 @@ Una vez que la distribución de los sitios es completada, cada hilo hace crecer 
 
 \subsection{Asignación de Enlaces}
 \label{subsec:pbond}
-En la sección anterior, cada hilo mantuvo su lista $L_{SC}$, la cual contiene las posiciones de los sitios insertados durante el sembrado y rellenado de red porosa, tal y como se hace en la solución básica. La listas $L_{SC}$ de cada hilo contienen las posiciones en las cuales se insertaron los sitios a lo largo de la red porosa; sin embargo sus los elementos de la lista $L_SC$ están dispersos en la red porosa.\\
+En la sección anterior, cada hilo mantuvo su lista $L_{SC}$, la cual contiene las posiciones de los sitios insertados durante el sembrado y rellenado de red porosa, tal y como se hace en la solución básica. La listas $L_{SC}$ de cada hilo contienen las posiciones en las cuales se insertaron los sitios a lo largo de la red porosa; sin embargo sus los elementos de la lista $L_{SC}$ están dispersos en la red porosa.\\
 
 Debido a las acciones realizadas en la sección anterior las listas $L_{SC}$ se pueden estar en desbalance por lo que es necesario distribuir los elementos entre los hilos. Para distribuir los elementos de las listas $L_{SC}$ se utiliza el mismo algoritmo que de la sección anterior (Algoritmo \ref{alg:sitesdist}), con dos cambios, el primero es el cambio en todo el algoritmo de $L_S$ por $L_{SC}$ y el segundo es cambiar la linea 1 por $M[id]=SNS[id]-Size(L_{SC}[id])$.\\
 
-Una vez que las listas están balanceadas, cada hilo, toma las posiciones de los sitos una a uno de la lista $L_SC$ y conecta los tres correspondientes enlaces al sitio (izquierdo, trasero y superior). Cada conexión entre sitio y enlace debe cumplir con el $PC$ y las $RG$, siguiendo el mismo procedimiento descrito en la sección \ref{subsec:sbonds}. Cada sitios es conectado a solo tres enlaces porque, como se define en el Capítulo \ref{champ:intro}, un sitio tiene tres enlaces propios mientras que los otros tres enlaces son compartidos con los sitios vecinos. Lo anterior se hace para evitar la sincronización entre los hilos que posiblemente se necesitara al conectar los enlaces compartidos (derecho, frontal e inferior). Al finalizar este paso se obtiene una red porosa con violaciones al $PC$ y a las $RG$.
+Una vez que las listas están balanceadas, cada hilo, toma las posiciones de los sitos una a uno de la lista $L_{SC}$ y conecta los tres correspondientes enlaces al sitio (izquierdo, trasero y superior). Cada conexión entre sitio y enlace debe cumplir con el $PC$ y las $RG$, siguiendo el mismo procedimiento descrito en la sección \ref{subsec:sbonds}. Cada sitios es conectado a solo tres enlaces porque, como se define en el Capítulo \ref{champ:intro}, un sitio tiene tres enlaces propios mientras que los otros tres enlaces son compartidos con los sitios vecinos. Lo anterior se hace para evitar la sincronización entre los hilos que posiblemente se necesitara al conectar los enlaces compartidos (derecho, frontal e inferior). Al finalizar este paso se obtiene una red porosa con violaciones al $PC$ y a las $RG$.
 
 \subsection{Generación de una red porosa válida}
 \label{subsec:pvalid}
 Para que la red creada a partir de los pasos descritos en las secciones anteriores de este capítulo sea válida en términos del $PC$ y de las $RG$, es necesario aplicar una serie de $MCs$ para eliminar por completo las violaciones. Por cada intercambio de sitios o enlaces durante un $MCs$ el $PC$ y las $RG$ deben ser respetadas.\\
 
-De igual manera los $MCs$ se realizaran paralela a través de hilos los cuales trabajan de manera independiente en distintas subredes, los pasos para el intercambio de poros son los siguientes: 
+De igual manera los $MCs$ se realizaran paralela a través de hilos los cuales trabajan de manera independiente en distintas subredes, los pasos para el intercambio de poros son los siguientes:
 
 \begin{enumerate}
 \item La red porosa es dividida en $2N$ subredes utilizando el algoritmo descrito en la Sección \ref{sec:pdistribution}.
@@ -163,5 +213,5 @@ De igual manera los $MCs$ se realizaran paralela a través de hilos los cuales t
 \item Cada hilo calcula el número total de sitios con violaciones a las $GR$ en ambas subredes, de existir , incluyendo las caras externas. Cuando el número total de violaciones es igual a cero el algoritmo termina, en otro caso se repite desde el paso 4
 \end{enumerate}
 
-\subsection{Mejoramiento de la isotropía}
+\section{Mejoramiento de la isotropía}
 \label{subsec:pisotropy}

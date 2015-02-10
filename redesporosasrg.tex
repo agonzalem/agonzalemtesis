@@ -4,9 +4,6 @@
 \barra
 \bigskip
 
-%En este capítulo se describen dos algoritmos para la creación de redes porosas sujetas a restricciones geométricas. En ambos algoritmos la generación de sitios y enlaces se basa en las distribuciones $F_S(R_S)$ y $F_B(R_B)$. La primera propuesta esta basada puramente en el Método de Monte Carlo para la generación de redes porosas que cumplan con las restricciones geométricas. El segundo algoritmo propuesto tanto los sitios como los enlaces son generados y ordenados de forma descendente en dos listas respectivamente, de igual forma existe un proceso de sembrado de semillas para la generación de clusters dicho proceso se basa en la asignación de sitios de mayor tamaño primero, los sitos asignados a la red porosa no tienen ningún enlace conectado a diferencia del algoritmo secuencial de NoMISS donde los sitios semilla debían tener sus seis enlaces conectados. Después del proceso de sembrado comienza la asignación de enlaces donde en el primer algoritmo la asignación es puramente aleatoria, el segundo algoritmo se intenta conectar cada enlace con el sitio mas grande posible. Detallamos cada algoritmo en las siguientes secciones.
-
-
 En este capítulo se describen dos algoritmos para la creación de redes porosas sujetas a restricciones geométricas. En ambos algoritmos la generación de sitios y enlaces se basa en las distribuciones $F_S(R_S)$ y $F_B(R_B)$. Ambos algoritmos propuestos se pueden separar en dos grandes fases: inicalizaci\'on de la red porosa con sitios y enlaces y la generación de una red porosa v\'alida. Cabe señalar que una red porosa v\'alida es aquella que se encuentra libre de violaciones a las $RG$. En la primera fase el primer algoritmo inserta de forma aleatoria sitios y enlaces hasta cubrir toda la red, mientras tanto el segundo algoritmo sigue el método de sembrado del algoritmo secuencial NoMISS. con la diferencia de que los sitios que conforman a los clusters no tienen enlaces asignados inmediatamente después del sembrado el algoritmo comienza a asignar enlaces a los sitios siguiendo la regla de intentar conectar siempre a cada sitio los enlaces de mayor tamaño posible. Después de la fase de inicalizaci\'on ambos algoritmos pueden tener violaciones a las $RG$ por lo que la segunda fase se basa en la eliminaci\'on de las violaciones a las $RG$ utilizado el Método de Monte Carlo. A continuación se describe a detalle cada algoritmo.
 
 \section{Solución Básica Aleatoria}
@@ -100,22 +97,25 @@ La asignación de enlaces se inicia con los sitos de más grandes hasta los siti
 
 Una vez que la red porosa ha sido inicializada por completo ya sea con el algoritmo de la Solución Básica Aleatoria o con el de la Solución Híbrida con sitios y enlaces, la red porosa puede tener violaciones a las $RG$ esto se debe a que en la Solución Básica Aleatoria no se verifica el cumplimiento de las $RG$ al asignar un enlace a un sitio debido a que es un método completamente aleatorio, por el contrario la Solución Híbrida intenta conectar cada enlace con el sitio mas grandes posible donde la conexión entre sitio y enlace cumplan con las $RG$ sin embargo existen casos en los cuales no es posible que se cumplan las $RG$ y por consiguiente la conexión provoca violaciones a las $RG$. Cabe destacar que el número de violaciones a las $RG$ esta directamente relacionado con el valor del traslape($\Omega$).\\
 
-%Una vez que la red porosa ha sido inicializada por completo con los sitios y enlaces ya sea con el algoritmo Solución Básica Aleatoria o con la Solución Híbrida la red porosas puede tener violaciones a las $RG$ esto se debe a que en el algoritmo Solución Básica Aleatoria no se verifica el cumplimiento de las $RG$ en la asignación de enlaces ya que es un método completamente aleatorio, por el contrario el algoritmo Solución Híbrida durante la asignación de enlaces este intenta conectar los enlaces de tal forma que cumplan con las $RG$ haciendo que los enlaces más grandes se conecten con los sitios más grandes sin embargo existen casos en los cuales no es posible realizar esta acción y por consiguiente pueden existir violaciones a las $RG$. Cabe destacar que el número de violaciones a las $RG$ esta directamente relacionado con el traslape($\Omega$).\\
+Para eliminar las violaciones al $PC$ y $RG$ se utilizo en método el Método de Monte Carlo tal y como lo hace el algoritmo secuencial BiaSED descrito en la Sección \ref{subsubsec:biased}, entonces se aplica una serie de Pasos de Monte Carlo($MCs$) a la redes porosas generadas por los algoritmos descritos en las secciones \ref{sec:smcrg} y \ref{sec:hybrid} para eliminar por completo las violaciones tanto al $PC$ como a las $RG$.Un paso de Monte Carlo involucra $4L^3$ intercambios(lineas 1-8 del Algoritmo \ref{alg:validnet})\\
 
-
-Para eliminar las violaciones al $PC$ y $RG$ se utilizo en método el Método de Monte Carlo tal y como lo hace el algoritmo secuencial BiaSED descrito en la Sección \ref{subsubsec:biased}, entonces se aplica una serie de Pasos de Monte Carlo($MCs$) a la redes porosas generadas por los algoritmos descritos en las secciones \ref{sec:smcrg} y \ref{sec:hybrid} para eliminar por completo las violaciones tanto al $PC$ como a las $RG$.\\
-
-En nuestro enfoque los intercambios de sitos o enlaces durante los pasos de Monte Carlo se deben cumplir tanto el $PC$ como las $RG$, en caso contrario el intercambio es rechazado, el algoritmo para la generación de una red porosa válida termina cuando todos los poros en la red cumplen tanto con el $PC$ como con las $RG$, como se muestra en el Algoritmo \ref{alg:validnet}.\\
+En nuestro enfoque los intercambios de sitos o enlaces durante cada paso de Monte Carlo se deben cumplir tanto el $PC$ como las $RG$, en caso contrario el intercambio es rechazado, el algoritmo para la generación de una red porosa válida termina cuando todos los poros en la red cumplen tanto con el $PC$ como con las $RG$, este comportamiento se muestra en el Algoritmo \ref{alg:validnet}.\\
 
 \begin{algorithm}
 \caption{Esquema de genración de una red porosa válida}\label{alg:validnet}
 \begin{algorithmic}[1]
 \Require $pnet$
+\Require $L$
+\State $MCs \gets 4L^3$
+
 \While{\Call{GRviolations}{$pnet$} $> 0$}
-	\State \Call{PoreExchange}{$pnet$}
-	\If{\Call{NonValidExchange}{pnet}}
-		\State \Call{RejectExchange}{$pnet$}
-	\EndIf
+	\State $exchanges \gets nMCs$
+	\While{$ (exchanges--) > 0$}
+		\State \Call{PoreExchange}{$pnet$}
+		\If{\Call{NonValidExchange}{$pnet$}}
+			\State \Call{RejectExchange}{$pnet$}
+		\EndIf
+	\EndWhile
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
