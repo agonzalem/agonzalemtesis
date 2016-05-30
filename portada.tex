@@ -1,43 +1,24 @@
-% \begin{center}
-% 	\thispagestyle{empty}%quitar encabezado, pie y numero de pagina
-% 	\begin{huge}
-% 		\textbf{Universidad Autónoma Metropolitana} \despacio
-% 	\end{huge}
-% 	\begin{large} 
-% 		Unidad Azcapotzalco \linebreak
-% 		División de Ciencias Básicas e Ingeniería \linebreak
-% 		Ingeniería en Computación \zespacio
-% 		Proyecto Terminal de Ingeniería en Computación\zespacio
-% 	\end{large}
-% 
-% 	\begin{LARGE}
-% 	\begin{center}
-% 		\textbf{ Codificación Concurrente de Audio en Arquitecturas Multi-Núcleo}\zespacio
-% 	\end{center}
-% 	\end{LARGE}
-% 
-% 	\begin{large}
-% 		\textbf{Reporte Final}\despacio
-% 		Alumno: \linebreak
-% 		\textbf{González Méndez Angel - 206308547} \zespacio
-% 		Fecha de entrega: \linebreak
-% 		\textbf{06 / septiembre / 2010} \zespacio
-% 		Trimestre Lectivo: \linebreak
-% 		\textbf{10-P} \zespacio
-% 		Asesor: \linebreak
-% 		\textbf{M. en C. Oscar Alvarado Nava - 26424}
-% 	\end{large}
-% \end{center}
-
 \thispagestyle{empty}
-\oddsidemargin 0.0in
+	
+\newgeometry{
+tmargin=20mm,
+bmargin=20mm,
+lmargin=20mm,
+rmargin=20mm,
+marginparsep=0mm,
+}
+
+%\noindent{
+\begingroup
+\setlength{\parindent}{0cm}
 \begin{minipage}[t]{\textwidth}
 	\begin{center}
-	 	\includegraphics[width=\textwidth]{img/variacion3Izt.png}
+	\includegraphics[width=\textwidth]{img/variacion3Izt.png}
 	\end{center}
 \end{minipage}
+\endgroup
 
-\oddsidemargin 0.2in
+%\oddsidemargin 0.2in
 % \begin{minipage}{0.82\textwidth}
 % \begin{center}
 % 	\normalsize \sc Universidad Autónoma Metropolitana \\
@@ -50,7 +31,7 @@
 %\vspace{0.5cm}
 %\centerline{\Large \bf Unidad }
 
-\vspace{1.5cm}
+\vspace*{\stretch{1}}
 %\centerline{\Large \bf Departamento }
 \centerline{\large  División de Ciencias Básicas e Ingeniería}
 \vspace{0.5cm}
@@ -61,7 +42,7 @@
 \vspace*{\stretch{1}}
 \begin{center}
 \Large \bf
-Propuesta de un Sistema Paralelo para la Creación de Redes Porosas sujetas a Restricciones Geométricas en Arquitecturas Multicore
+''Propuesta de un Sistema Paralelo para la Creación de Redes Porosas sujetas a Restricciones Geométricas en Arquitecturas Multicore''
 \end{center}
 \vspace*{\stretch{1}}
 
@@ -83,8 +64,13 @@ Propuesta de un Sistema Paralelo para la Creación de Redes Porosas sujetas a Re
 \centerline{\Large \bf Dra. Graciela Román Alonso}
 \vspace{0.5cm}
 %\centerline{\Large \bf [Nombre del Director(a)/Codirectores(as)]}
- 
-\vspace{1.2cm}
-{\large \bf México, D.F. \hfill  \mydate\today}
 
-\cleardoublepage
+\vspace{1.2cm}
+\begingroup
+\setlength{\parindent}{0cm}
+{
+\large\bf México, D.F. \hfill \mydate\today
+}
+\endgroup
+
+\restoregeometry

@@ -1,26 +1,14 @@
-\documentclass[letter,12pt]{book}
-\voffset=-36pt
-\marginparsep=20pt
-\textwidth 6.0in
-\textheight 8.75in
-\oddsidemargin 0.4in
-\evensidemargin 0in
+\documentclass[12pt]{book}
 %paquetes
 \usepackage[spanish,es-tabla]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{subfig}
 \usepackage[pdftex,colorlinks=true,bookmarks=true,linkcolor=black,urlcolor=black,citecolor=black]{hyperref}
-% \usepackage{anysize}% Permite emplear cualquier medida de márgenes. 
-% \usepackage{titlesec}%estilo de secciones, títulos ....
-% \usepackage[usenames]{color}
-% \usepackage{graphicx}
 \usepackage[dvips]{graphicx}
-% \usepackage{fancyhdr}% manipulación de encabezados y pie de pagina
 \usepackage{multicol}
 \usepackage{multirow}
 \usepackage{array,color}
 \usepackage{booktabs}
-% \usepackage{color}
 \usepackage[neverdecrease]{paralist}
 \usepackage{array}
 \usepackage{listings}
@@ -29,11 +17,39 @@
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
 \usepackage[ruled]{algorithm}
+%\usepackage[letterpaper]{geometry}
+\usepackage{emptypage}
+\usepackage[showframe,letterpaper]{geometry}
+%\usepackage{lmodern}
+%\usepackage{layouts}
+%\usepackage{boxedminipage}
+% \usepackage{fancyhdr}% manipulación de encabezados y pie de pagina
+% \usepackage{anysize}% Permite emplear cualquier medida de márgenes. 
+% \usepackage{titlesec}%estilo de secciones, títulos ....
+% \usepackage[usenames]{color}
+% \usepackage{graphicx}
+% \usepackage{color}
+%\usepackage{setspace}
+%\usepackage{enumitem}
+%\usepackage{emptypage}
+%\usepackage{soul}
+%\usepackage{ragged2e}
 
-%definiciones
+%% Definiciones %%
 \floatname{algorithm}{Algoritmo}
 \renewcommand\tocbibname{Referencias}
+% \definecolor{Black}{rgb}{0,0,0}
+\title{Idónea Comunicación de Resultados}
+\author{Angel González Méndez}
+%\date{2014-09-01}
 
+%% Comandos %%
+\newdateformat{mydate}{\monthname[\THEMONTH] de \THEYEAR}
+\newcommand{\zespacio}{\linebreak \linebreak}
+\newcommand{\despacio}{\linebreak \linebreak \linebreak}
+\newcommand{\vespacio}{\linebreak \linebreak \linebreak \linebreak}
+\newcommand{\fespacio}{\linebreak \linebreak \linebreak \linebreak \linebreak}
+\newcommand\barra{\hrule height 2pt}
 %\providecommand*{\monthnamespanish}[1]{%
 \renewcommand{\monthnamespanish}[1][\month]{%
 \ifcase#1\relax
@@ -51,14 +67,21 @@
 \or Diciembre%
 \fi}
 
-\newdateformat{mydate}{\monthname[\THEMONTH] de \THEYEAR}
-% \definecolor{Black}{rgb}{0,0,0}
-\newcommand{\zespacio}{\linebreak \linebreak}
-\newcommand{\despacio}{\linebreak \linebreak \linebreak}
-\newcommand{\vespacio}{\linebreak \linebreak \linebreak \linebreak}
-\newcommand{\fespacio}{\linebreak \linebreak \linebreak \linebreak \linebreak}
 
-% %estilo de pagina
+%% Estilo de pagina %%
+\geometry{letterpaper,
+tmargin=25mm,
+bmargin=25mm,
+lmargin=30mm,
+rmargin=30mm,
+%marginparsep=0mm
+}
+%\voffset=-36pt
+%\marginparsep=20pt
+%\textwidth 6.0in
+%\textheight 8.75in
+%\oddsidemargin 0.4in
+%\evensidemargin 0in
 % \fancyhf{}
 % \pagestyle{fancy}
 % \fancyfoot[R]{\thepage}%alineación del pie
@@ -68,28 +91,40 @@
 % \marginsize{2.0cm}{2.0cm}{2.0cm}{2.0cm}% Controla los márgenes {izquierda}{derecha}{arriba}{abajo}.
 %\colorbox{color}{texto} % remarcar texto con color
 
-\newcommand\barra{\hrule height 2pt}
-
-\title{Idónea Comunicación de Resultados}
-\author{Angel González Méndez}
-%\date{2014-09-01}
+%% Estilo Parrafo y listas %%
+%\spacing{1.5}
+%\setlength{\parindent}{0pt}
+%\renewcommand{\baselinestretch}{1.5}
+%\linespread{1.5}
 
 \begin{document}
-	\frontmatter
+%	\pagebreak
+%	\printinunitsof{mm}{\pagevalues}
+%	\verb|\marginparwidth|: \printinunitsof{mm}\prntlen{\marginparwidth}
+%	\pagediagram
+%	\pagebreak
+ 	\frontmatter
  	\addtocontents{toc}{\barra}
+ 	\cleardoublepage
  	\include{portada}
- 	\textwidth 6.0in
- 	\oddsidemargin 0.4in
+ 	%\setlength{\parindent}{default}
+ 	\cleardoublepage
 	\include{resumen}
+	\cleardoublepage
 	\addtocontents{lot}{\barra}
  	\addtocontents{lof}{\barra}
+ 	%\addtocontents{loa}{\barra}
+ 	\addcontentsline{toc}{chapter}{Índice general}
 	\tableofcontents
 	\cleardoublepage
-%	\addcontentsline{toc}{chapter}{Lista de figuras} % para que aparezca en el indice de contenidos
-	\listoffigures % indice de figuras
+	\listoffigures
+	\cleardoublepage
+	%\listofalgorithms
+	%%\addtocontents{loa}{\def\string\figurename{Algorithm}}
 %	\cleardoublepage
-%	\addcontentsline{toc}{chapter}{Lista de tablas} % para que aparezca en el indice de contenidos
 %	\listoftables % indice de tablas
+%	\addcontentsline{toc}{chapter}{Lista de figuras} % para que aparezca en el indice de contenidos
+%	\addcontentsline{toc}{chapter}{Lista de tablas} % para que aparezca en el indice de contenidos
 	\mainmatter
 	\include{introduccion}
 	%\include{modelo}

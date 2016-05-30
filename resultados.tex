@@ -3,14 +3,28 @@
 \bigskip
 \barra
 \bigskip
+%\textbf{Nota: Este apartado esta siendo traducido del artículo que se presentara en el workshop PDSEC 2014 en el Conrgeso IEEE IPDPS 2014, adicionalmente se complementara con resultados de pruebas en progreso}.\\
+El algoritmo Solución Paralela Aleatoria($SPA$) descrito en la Sección \ref{sec:pbiasedrg} y el algoritmo Solución Paralela Híbrida($SPH$) descrito en la Sección \ref{sec:pbiasedrg} se implementaron haciendo uso del API de OpenMP versi\'on 3, las pruebas de estos se realizaron en un equipo de computo con las siguientes características: 16GB de memoria  RAM y un procesador Intel(R) Core(TM) i7 CPU  Extreme Edition con 6 cores(12 con multithreading). Los respectivos versiones  algoritmos secuenciales Solución Aleatoria(SA) descrito en la Sección \ref{sec:smcrg}($SA$) y Solución Híbrida($SH$) descrito en la Sección \ref{sec:hybrid} se probaron en el mismo equipo de computo haciendo uso de un único procesador(core).\\
 
-\textbf{Nota: Este apartado esta siendo traducido del artículo que se presentara en el workshop PDSEC 2014 en el Conrgeso IEEE IPDPS 2014, adicionalmente se complementara con resultados de pruebas en progreso}.\\
+Con las soluciones $SA$, $SH$, $SPA$ y $SPH$ se pueden construir redes porosas que cumplan tanto $PC$ y las $RG$; sin embargo el ordenamiento y búsqueda de sitios y enlaces se transforma un mayor numero de cálculos para las versiones $SH$ y $SPH$. En las Figura \ref{fig:traslape-a} y \ref{fig:traslape-h}, se muestran los distintos tiempos de construcción para una red porosa de tamaño $L=100$ utilizando y variando el traslape$\Omega$, en ambas figuras podemos observar que conforme el traslape aumenta el tiempo de ejecución también aumenta esto se debe a que tanto en las versiones secuenciales y paralelas el encontrar enlaces que cumplan con las $RG$ para un sitio se vuelve mas complicado lo que se traduce un notable incremento en numero de cálculos.\\
 
-El algoritmo propuesto en la Capítulo \ref{champ:PBSGR} fue implementando utilizando OpenMP. Las pruebas fueron realizadas en una computadora con un procesador Intel(R) Core(TM) i7 CPU  Extreme Edition a una velocidad de 3.47GHz y con 16GB de RAM. La versión secuencial descrita en el Capítulo \ref{champ:BSGR} se ejecuto en un solo procesador.\\
+Comparando las versiones $SA$ y $SPA$ se puede ver en la Figura \ref{fig:traslape-a} que $SPA$ comienza a tener un mejor rendimiento en términos de tiempo cuando el traslape es cercano o mayor a $0.1$ esto se debe a que el numero de violaciones a las $RG$ aumenta y por consiguiente el numero de pasos de Monte Carlo para eliminarlas incrementa y es donde al incrementar el numero de hilos comienza a mejorar el rendimiento.\\
 
-Nuestra solución básica secuencial (llamada en este capítulo como BSGR: Solución Básica considerando $GR$), con la cual se pueden generar redes porosas que cumplen con el $PC$ y las $RG$; sin embargo, el ordenamiento de los enlaces y la búsqueda de configuraciones válidas esto se trasforma en que se requiere un mayor número de cálculos que la versión secuencial NoMISS como se muestra ne la Figura \ref{fig:timevartraslape}. Podemos observar en esta figura  con $L=100$ que con BSGR y su versión paralela solo se podrán construir redes porosas con traslapes bajos, en comparación con la versión secuencial de NoMISS, con la cual en las referencias \cite{ref4} y \cite{ref3} donde se alcanzaron altos traslapes.\\
+Comparando las versiones $SH$ y $SPH$ se puede ver en la Figura \ref{fig:traslape-h} que $SPH$ siempre es mejor en términos de tiempo independientemente de valor del traslape esto se debe al procedimiento de sembrado de sitios y asignación de enlaces, lo que permite una mejor distribución del trabajo entre los hilos.\\
 
-Comparamos la versión paralela de BSGR en las redes porosas con bajo diferentes valores de $\Omega$. En la Figura \ref{fig:timevartraslape} podemos observar que la versión BSGR Paralela (utilizando 8 hilos) supera a la versión BSGR independientemente de los valores del traslape.\\
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=4in]{graphs/traslape_mrg}
+\caption{Tiempos de ejecución de $SA$ y $SPA$ utilizando 2,8 y 64 hilos bajo diferentes valores de $\Omega$ (escala logarítmica)}
+\label{fig:traslape-a}
+\end{figure}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=4in]{graphs/traslape_hrg}
+\caption{Tiempos de ejecución de $SH$ y $SPH$ utilizando 2,8 y 64 hilos bajo diferentes valores de $\Omega$ (escala logarítmica)}
+\label{fig:traslape-h}
+\end{figure}
 
 Es evidente que el valor del traslape $\Omega$ alcanzado en las redes que consideran el cumplimiento del $PC$ y las $RG$, es relativamente bajo ($\Omega<1$). Este hecho se debe a la restricción impuesta por las restricciones geométricas. Esto último se ilustra en las ecuaciones \ref{eq:eq02} y \ref{eq:eq03}:
 
@@ -26,10 +40,55 @@ B_C(R_S) = & \{\int\limits^{R_S} ... \int\limits_{0} F_B(R_{B1})\; ... \; F_B(R_
 \label{eq:eq03}
 \end{eqnarray}
 
-donde $B_C(R_S)$ es corresponde el volumen definido por la ecuación \ref{eq:eq03}; esta se relaciona con el conjunto de enlaces que pueden ser conectados a un sitio, evitando al mismo tiempo la existencia de interferencias entre ellos. $S(R_S)$ es la fracción de sitios que son de tamaño $R_S$ o más pequeños.\\
+donde $B_C(R_S)$ corresponde al volumen definido por la ecuación \ref{eq:eq03}; esta se relaciona con el conjunto de enlaces que pueden ser conectados a un sitio, evitando al mismo tiempo la existencia de interferencias entre ellos. $S(R_S)$ es la fracción de sitios que son de tamaño $R_S$ o más pequeños.\\
 
-Las ecuaciones \ref{eq:eq02} y \ref{eq:eq03} restringen el valor de traslape como se muestra en \cite{ref5}, ya que la definición matemática de $B_C(R_S)$ impide en si alcanzar valores cercanos a la unidad, es por eso que se obtienen valores de traslape son $\Omega<1$.\\
+Las ecuaciones \ref{eq:eq02} y \ref{eq:eq03} restringen el valor de traslape como se muestra en \cite{ref5}, ya que la definición matemática de $B_C(R_S)$ impide en si alcanzar valores cercanos a la unidad, es por eso que los valores mostrados del traslape $\Omega<1$.\\
 
+En la Figura \ref{fig:threads}, se muestran cuatro casos de comparación entre las soluciones $SPA$ y $SPH$ en términos del tiempo de construcción de una red porosa de tamaño $L=100$ con distintos traslapes y variando el numero de hilos utilizados para la construcción de la red. En cada caso se añade como referencia dos lineas rectas que representan los tiempos de construcción de la red porosa con el traslape especificado para las soluciones $SA$ y $SH$.\\
+
+En la Figura \ref{fig:threads60}, se muestra el primer caso para construcción de una red de tamaño $L=100$ con un  traslape de $\Omega=0.001908$, la solución $SPH$ muestra en general un mejor rendimiento que $SPA$ sin embargo muestra un bajo rendimiento respecto a $SA$ esto se debe a que al utilizar un traslape tan pequeño el numero de violaciones a las $RG$ es bajo por lo cual la solucion $SPH$ consume la mayor parte de su tiempo en la inicialización de la red particularmente en proceso de ordenamiento de sitios y enlaces mientras que $SA$ trabaja directamente en la eliminación de las violaciones, lo mismo ocurre con $SH$.\\
+
+En la Figura \ref{fig:threads50}, se muestra el segundo caso para construcción de una red de tamaño $L=100$ con un  traslape de $\Omega=0.042809$, podemos ver que $SPA$ y $SPH$ muestran un compartimento muy similar en el cual a partir del uso de mas de 8 hilos mejoran su rendimiento respecto a $SA$, al aumentar el traslape también aumenta el numero de violaciones a las $RG$ lo que se transforma en mayor trabajo para cada hilo. Para $SPA$ en el caso anterior y en el actual(hasta 8 hilos) la mayor parte de tiempo se consumía en la distribución y redistribución de los datos es por eso que se muestra un rendimiento menor que $SA$. Para $SPH$ por las mismas causas tiene que un compartimento similar al del caso  sin embargo en este caso se obtuvo un recudimento mejor que el de $SA$ utilizando 8 hilos a diferencia de los 32 necesarios en el caso anterior.\\
+
+En la Figura \ref{fig:threads43}, se muestra el tercer caso para construcción de una red de tamaño $L=100$ con un traslape de $\Omega=0.153895$, la solución $SPH$ muestra un mejor rendimiento que $SA$ y $SPA$ esto como consecuencia de dos factores el primero es que el traslape ocasiono un aumento significativo de violaciones a las $RG$ y el segundo es el proceso de inicializacion que en $SA$ y $SPA$ es completamente aleatorio lo que hace que el numero de violaciones a las $RG$ respecto a $SH$ y $SPH$ sea mucho mayor.\\
+
+En la Figura \ref{fig:threads42}, se muestra el cuarto caso para construcción de una red de tamaño $L=100$ con un traslape de $\Omega=0.179723$, para este valor de traslape los tiempos de ejecución de las soluciones $SA$ y $SPA$ se incrementaron de forma exponencial por lo cual se interrumpió su ejecución. Para $SPH$ se pudo observar que en todos los casos siempre se mantuvo con un mejor rendimiento respecto a $SH$.\\
+
+Adicionalmente en todos los casos mostrados en la Figura \ref{fig:threads}, se utilizaron hasta 64 hilos en las pruebas lo cual supera al numero cores o hilos de ejecución(hyperthreading) disponibles en el equipo de computo donde se realizaron las pruebas, sin embargo esta sobrecarga no efecto de forma negativa el rendimiento de las soluciones $SPA$ y $SPH$ si no al contrario, esto se debe a dos factores el primero es la naturaleza de los algoritmos utilizados en los cuales al particionar y operar sobre los datos no es necesaria una operación de reducción o unión esto da como resultado que la suma del tiempo de trabajar con conjuntos de datos mas pequeños sea menor al tiempo que se necesitaría completar la misma tarea con un conjunto del tamaño de la suma se los conjuntos mas pequeños, el segundo factor es la planificación de los hilos por parte del sistema operativo el cual puede manejar un numero de hilos superior al numero al numero cores o hilos de ejecución(hyperthreading). La mejora en tiempo con sobrecarga se obtuvo de forma constante utilizando hasta 64 hilos, al utilizar una valor mas elevado se comenzaron a tener resultados impredecibles.\\
+\vfill
+\pagebreak
+%65	0.000862
+%60	0.001908
+%55	0.012969
+%50	0.042809
+%45	0.110658
+%44	0.130928
+%43	0.153895
+%42	0.179723
+\begingroup
+\setlength{\parindent}{0cm}
+\begin{figure}[hbtp]
+\centering
+\begin{tabular}{cc}
+\subfloat[$\Omega=0.001908$]{
+\includegraphics[width=2.7in]{graphs/threads60}
+\label{fig:threads60}}
+& \subfloat[$\Omega=0.042809$]{
+\includegraphics[width=2.7in]{graphs/threads50}
+\label{fig:threads50}}\\
+\subfloat[$\Omega=0.153895$]{
+\includegraphics[width=2.7in]{graphs/threads43}
+\label{fig:threads43}}
+& \subfloat[$\Omega=0.179723$]{
+\includegraphics[width=2.7in]{graphs/threads42}
+\label{fig:threads45}}
+\end{tabular}
+\caption{Tiempos de ejecución para $SH$, $SPH$, $SH$ y $SPH$ con distintos traslapes y variando el numero de hilos(escala logarítmica)}
+\label{fig:threads}
+\end{figure}
+\endgroup
+
+\pagebreak
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=4in]{img/variatraslape.pdf}
@@ -37,7 +96,7 @@ Las ecuaciones \ref{eq:eq02} y \ref{eq:eq03} restringen el valor de traslape com
 \label{fig:timevartraslape}
 \end{figure}
 
-La Figura \ref{fig:timenuevo} muestra el tiepo de ejecución requerido para crear una red porosa con $L=100$, $\Omega=0.15$, $ClusterSize=32$, y $NClusters=30$ utilizando un número de hilos diferente. El tiempo de ejecución en paralelo en general disminuye mientras aumenta el número de hilos. Podemos observar en algunos casos, como cuando el número e hilos  es igual a 6 y 14, el tiempo de ejecución no disminuye; creemos que estos casos se deben a la siembra aleatoria de clusters lo cual genera un número mayor de violaciones a las $RG$ que en los otros casos, al tener un mayor número de violaciones el tiempo que lleva generar una red porosa válida es mayor.\\
+La Figura \ref{fig:timenuevo} muestra el timepo de ejecución requerido para crear una red porosa con $L=100$, $\Omega=0.15$, $ClusterSize=32$, y $NClusters=30$ utilizando un número de hilos diferente. El tiempo de ejecución en paralelo en general disminuye mientras aumenta el número de hilos. Podemos observar en algunos casos, como cuando el número e hilos  es igual a 6 y 14, el tiempo de ejecución no disminuye; creemos que estos casos se deben a la siembra aleatoria de clusters lo cual genera un número mayor de violaciones a las $RG$ que en los otros casos, al tener un mayor número de violaciones el tiempo que lleva generar una red porosa válida es mayor.\\
  
 \begin{figure}[hbtp]
 \centering

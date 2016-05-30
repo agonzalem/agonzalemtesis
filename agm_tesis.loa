@@ -1,0 +1,6 @@
+\hrule height 2pt
+\contentsline {algorithm}{\numberline {1}{\ignorespaces Sembrado de clusters dentro de la red porosa($pnet$)\relax }}{22}{algorithm.1}
+\contentsline {algorithm}{\numberline {2}{\ignorespaces Asignaci\IeC {\'o}n de enlaces\relax }}{23}{algorithm.2}
+\contentsline {algorithm}{\numberline {3}{\ignorespaces Esquema de genraci\IeC {\'o}n de una red porosa v\IeC {\'a}lida\relax }}{24}{algorithm.3}
+\contentsline {algorithm}{\numberline {4}{\ignorespaces Algoritmo paralelo de $MC$ para generar una red porosa v\IeC {\'a}lida\relax }}{31}{algorithm.4}
+\contentsline {algorithm}{\numberline {5}{\ignorespaces Algoritmo de redistribuci\IeC {\'o}n de los sitos entre los hilos\relax }}{35}{algorithm.5}

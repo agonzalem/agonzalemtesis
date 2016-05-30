@@ -5,7 +5,7 @@ set xlabel "Traslape(Ω)"
 set ylabel "Tiempo(s)"
 set title ""
 set logscale y
-plot "hybridrg.txt" using ($2):($3) t 'Hibrida' lw 2 ps 1 with linespoints \
-, "montecarlorg.txt" using ($2):($3) t 'Aleatoria' lw 2 ps 1 with linespoints \
+plot "hybridrg.txt" using ($2):($3) t 'SH' lw 2 ps 1 with linespoints \
+, "montecarlorg.txt" using ($2):($3) t 'SA' lw 2 ps 1 with linespoints \
 
 

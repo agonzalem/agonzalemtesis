@@ -4,10 +4,7 @@
 \barra
 \bigskip
 
-%\section{C\'omputo Paralelo}
-%\label{sec:cp}
-
-Por años se han utilizado las computadoras como herramientas para la solución, aproximación o simulación de problemas científicos reales, los cuales tienen una o varias de las siguientes características: son complejos, requieren de un gran número de cálculos o manipulan grandes volúmenes de datos. Lo anterior fue la razón por la cual nació la computación científica la cual es una actividad multidisciplinaria en la cual se hace uso de métodos y técnicas computacionales para dar soluciones exactas o aproximadas con la premisa de que al utilizar las computadoras el tiempo para obtener resultados es menor. \\
+Por años se han utilizado las computadoras como herramientas para la solución, aproximación o simulación de problemas científicos reales, los cuales tienen una o varias de las siguientes características: son complejos, requieren de un gran número de cálculos o manipulan grandes volúmenes de datos. Lo anterior fue la razón por la cual nació la computación científica la cual es una actividad multidisciplinaria en la cual se hace uso de métodos y técnicas computacionales para dar soluciones exactas o aproximadas con la premisa de que al utilizar las computadoras el tiempo para obtener resultados es menor.\\
 
 La simulación por computadora es una herramienta altamente utilizada debido a que nos permite obtener soluciones aproximadas sobre escenarios de la vida real, varios ramas de la ciencia se auxilian de simulaciones por computadora para lograr mejores resultados en experimentos reales basándose en la información obtenida de simulaciones. Cuando se habla de simulación por computadora, est\'a inherente que se requiere de un modelo el cual nos ayude a abstraer características y limitaciones de un problema real. Adicionalmente de que la simulación por computadora nos puede permitir generar experimentos con mayor exactitud, \'esta también nos puede ayudar a disminuir riesgos y ahorrar recursos.\\
 
@@ -18,6 +15,7 @@ pero el procesamiento de millones o billones de datos que pueden representar los
 
 Por lo general la computación científica hace uso  del computo de alto rendimiento(computo paralelo) a través de modelos de programación paralela, los cuales permiten  el uso eficiente de los recursos computacionales para disminuir el tiempo en la obtenci\'on de resultados.
 El c\'omputo paralelo fue impulsado gracias a los avances tecnológicos como lo fueron las computadoras multi-procesador o los primeros clusters(Beowulf), en ambas arquitecturas hubo un avance significativo; en la primera fue la incorporación de más de un procesador en una misma tarjeta y en la segunda fue el uso de la capacidad de computo de computadoras independientes a través de su interconexión(cluster). En la actualidad el computo paralelo va cobrando mayor fuerza y adem\'as conforme pasa tiempo se est\'a volviendo más accesible y por lo mismo se est\'a aplicando en un mayor número de áreas de conocimiento. En particular, para aplicar el computo paralelo en un problema, se requiere elegir una arquitectura y un técnica de programación. Las arquitecturas más utilizadas para el cómputo paralelo o de alto rendimiento son: multi-procesador, multi-núcleo, gpus, clusters y grids. Respecto a técnicas de programación,  las podemos dividir en 3 grandes grupos: la programación con memoria compartida, la programación con memoria distribuida o programación híbrida.\\
+
 
 Cuando se utilizan arquitecturas multi-núcleo, la mejor opci\'on de programación paralela se realiza a través de la creaci\'on de hilos(tareas computacionales), para que las unidades de procesamiento puedan accesar a la memoria de manera compartida. Dos de las tecnologías más utilizadas para el manejo de hilos son: Posix Threads\cite{ref13} y OpenMP\cite{ref6}, ambos siguen el modelo fork-join, sin embargo OpenMP proporciona una interfaz de alto nivel que permite al programador concentrar la mayor parte de su esfuerzo en resolver el problema de aplicaci\'on y no en aspectos técnicos de creaci\'on expl\'icita de hilos y manejo de mecanismos de sincronizaci\'on, que en ocasiones generan errores que no se relacionan con el problema que se quiere resolver. Ademas OpenMP es un estándar avalado por diversas empresas internacionales y se encuentra soportado por los principales compiladores de C/C++ y Fortran.\\ 
 
@@ -31,6 +29,10 @@ En el Cap\'itulo siguiente se presentan los conceptos b\'asicos relacionados con
 
 \chapter{Simulaci\'on de Redes Porosas}
 \label{champ:construction}
+\bigskip
+\barra
+\bigskip
+
 
 \section{Modelado de Redes Porosas}
 \label{sec:model}
@@ -88,6 +90,10 @@ La creación de redes porosas de gran tamaño requiere de grandes recursos de c�
 
 \chapter{Objetivos}
 \label{champ:objetivos}
+\bigskip
+\barra
+\bigskip
+
 
 El objetivo principal de  este trabajo es proponer e implementar un sistema eficiente para la simulaci\'on de Redes Porosas sujetas a Restricciones Geométricas.  En el presente trabajo se plantea el desarrollo de un sistema paralelo que saque provecho de las ventajas de las arquitecturas multicore y la programación paralela sobre memoria compartida para acelerar el tiempo de construcci\'on de las redes porosas.
 
