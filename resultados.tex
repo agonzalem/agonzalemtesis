@@ -15,14 +15,14 @@ Comparando las versiones $SH$ y $SPH$ se puede ver en la Figura \ref{fig:traslap
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=4in]{graphs/traslape_mrg}
-\caption{Tiempos de ejecución de $SA$ y $SPA$ utilizando 2,8 y 64 hilos bajo diferentes valores de $\Omega$ (escala logarítmica)}
+\caption{Tiempos de ejecución de $SA$ y $SPA$ utilizando 2, 8 y 64 hilos bajo diferentes valores de $\Omega$ (escala logarítmica)}
 \label{fig:traslape-a}
 \end{figure}
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=4in]{graphs/traslape_hrg}
-\caption{Tiempos de ejecución de $SH$ y $SPH$ utilizando 2,8 y 64 hilos bajo diferentes valores de $\Omega$ (escala logarítmica)}
+\caption{Tiempos de ejecución de $SH$ y $SPH$ utilizando 2, 8 y 64 hilos bajo diferentes valores de $\Omega$ (escala logarítmica)}
 \label{fig:traslape-h}
 \end{figure}
 
@@ -54,7 +54,7 @@ En la Figura \ref{fig:threads43}, se muestra el tercer caso para construcción d
 
 En la Figura \ref{fig:threads42}, se muestra el cuarto caso para construcción de una red de tamaño $L=100$ con un traslape de $\Omega=0.179723$, para este valor de traslape los tiempos de ejecución de las soluciones $SA$ y $SPA$ se incrementaron de forma exponencial por lo cual se interrumpió su ejecución. Para $SPH$ se pudo observar que en todos los casos siempre se mantuvo con un mejor rendimiento respecto a $SH$.\\
 
-Adicionalmente en todos los casos mostrados en la Figura \ref{fig:threads}, se utilizaron hasta 64 hilos en las pruebas lo cual supera al numero cores o hilos de ejecución(hyperthreading) disponibles en el equipo de computo donde se realizaron las pruebas, sin embargo esta sobrecarga no efecto de forma negativa el rendimiento de las soluciones $SPA$ y $SPH$ si no al contrario, esto se debe a dos factores el primero es la naturaleza de los algoritmos utilizados en los cuales al particionar y operar sobre los datos no es necesaria una operación de reducción o unión esto da como resultado que la suma del tiempo de trabajar con conjuntos de datos mas pequeños sea menor al tiempo que se necesitaría completar la misma tarea con un conjunto del tamaño de la suma se los conjuntos mas pequeños, el segundo factor es la planificación de los hilos por parte del sistema operativo el cual puede manejar un numero de hilos superior al numero al numero cores o hilos de ejecución(hyperthreading). La mejora en tiempo con sobrecarga se obtuvo de forma constante utilizando hasta 64 hilos, al utilizar una valor mas elevado se comenzaron a tener resultados impredecibles.\\
+Adicionalmente en todos los casos mostrados en la Figura \ref{fig:threads}, se utilizaron hasta 64 hilos en las pruebas lo cual supera al numero cores o hilos de ejecución(hyperthreading) disponibles en el equipo de computo donde se realizaron las pruebas, sin embargo esta sobrecarga no efecto de forma negativa el rendimiento de las soluciones $SPA$ y $SPH$ si no al contrario, esto se debe a dos factores el primero es la naturaleza de los algoritmos utilizados en los cuales al particionar y operar sobre los datos no es necesaria una operación de reducción o unión esto da como resultado que la suma del tiempo de trabajar con conjuntos de datos mas pequeños sea menor al tiempo que se necesitaría completar la misma tarea con un conjunto del tamaño de la suma de los conjuntos mas pequeños, el segundo factor es la planificación de los hilos por parte del sistema operativo el cual puede manejar un numero de hilos superior al numero cores o hilos de ejecución(hyperthreading). La mejora en tiempo con sobrecarga se obtuvo de forma constante utilizando hasta 64 hilos, al utilizar una valor mas elevado se comenzaron a tener resultados impredecibles.\\
 \vfill
 \pagebreak
 %65	0.000862
