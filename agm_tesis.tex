@@ -2,8 +2,10 @@
 %paquetes
 \usepackage[spanish,es-tabla]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage[pdftex,colorlinks=true,bookmarks=true,linkcolor=black,urlcolor=black,citecolor=black,pdfencoding=unicode]{hyperref}
+\usepackage{bookmark}
+\usepackage{appendix}
 \usepackage{subfig}
-\usepackage[pdftex,colorlinks=true,bookmarks=true,linkcolor=black,urlcolor=black,citecolor=black]{hyperref}
 \usepackage[dvips]{graphicx}
 \usepackage{multicol}
 \usepackage{multirow}
@@ -19,6 +21,7 @@
 \usepackage[ruled]{algorithm}
 \usepackage[letterpaper]{geometry}
 \usepackage{emptypage}
+\usepackage{pdfpages}
 %\usepackage[showframe,letterpaper]{geometry}
 %\usepackage{lmodern}
 %\usepackage{layouts}
@@ -111,6 +114,8 @@ rmargin=30mm,
  	\cleardoublepage
 	\include{resumen}
 	\cleardoublepage
+	\include{agradecimientos}
+	\cleardoublepage
 	\addtocontents{lot}{\barra}
  	\addtocontents{lof}{\barra}
  	%\addtocontents{loa}{\barra}
@@ -133,5 +138,6 @@ rmargin=30mm,
 	\include{propuestaparalela}
 	\include{resultados}
 	\include{conclusiones}
+	\include{apendices}
 	\include{referencias}
 \end{document}
