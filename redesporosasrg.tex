@@ -1,83 +1,78 @@
-\chapter[Construcción Secuencial]{Construcción Secuencial de Redes Porosas respetando $RG$}
+\chapter[Construcción Secuencial]{Construcción Secuencial de Redes Porosas sujetas a $RG$}
 \label{champ:BSGR}
 \bigskip
 \barra
 \bigskip
 
-%En este capítulo se describen dos algoritmos para la creación de redes porosas sujetas a restricciones geométricas. En ambos algoritmos la generación de sitios y enlaces se basa en las distribuciones $F_S(R_S)$ y $F_B(R_B)$. La primera propuesta esta basada puramente en el Método de Monte Carlo para la generación de redes porosas que cumplan con las restricciones geométricas. El segundo algoritmo propuesto tanto los sitios como los enlaces son generados y ordenados de forma descendente en dos listas respectivamente, de igual forma existe un proceso de sembrado de semillas para la generación de clusters dicho proceso se basa en la asignación de sitios de mayor tamaño primero, los sitos asignados a la red porosa no tienen ningún enlace conectado a diferencia del algoritmo secuencial de NoMISS donde los sitios semilla debían tener sus seis enlaces conectados. Después del proceso de sembrado comienza la asignación de enlaces donde en el primer algoritmo la asignación es puramente aleatoria, el segundo algoritmo se intenta conectar cada enlace con el sitio mas grande posible. Detallamos cada algoritmo en las siguientes secciones.
+En este capítulo se describen dos algoritmos secuenciales para la creación de redes porosas sujetas a restricciones geométricas las cuales se definieron en la Sección \ref{sec:mgr}, en donde el valor de traslape ($\Omega$) alcanzado por las redes que cumplan tanto con el $PC$ y las $RG$ será relativamente bajo($\Omega<1$) este hecho se debe a la restricción impuesta por las mimas restricciones geométricas lo cual se ilustra en las ecuaciones \ref{eq:eq02} y \ref{eq:eq03}.
+
+\begin{equation}
+B_C(R_S) \geq S(R_S)
+\label{eq:eqrg02}
+\end{equation}
+
+\begin{eqnarray}
+\nonumber \\
+B_C(R_S) = & \{\int\limits^{R_S} ... \int\limits_{0} F_B(R_{B1})\; ... \; F_B(R_{BC})dR_{B1} \nonumber \\
+& \; \ldots \; dR_{BC} \}^{1/C}
+\label{eq:eqrg03}
+\end{eqnarray}
+
+donde $B_C(R_S)$ corresponde al volumen definido por la ecuación \ref{eq:eq03}; esta se relaciona con el conjunto de enlaces que pueden ser conectados a un sitio, evitando al mismo tiempo la existencia de interferencias entre ellos. $S(R_S)$ es la fracción de sitios que son de tamaño $R_S$ o más pequeños.\\
+
+Las ecuaciones \ref{eq:eqrg02} y \ref{eq:eqrg03} restringen el valor de traslape como se muestra en \cite{ref5}, ya que la definición matemática de $B_C(R_S)$ impide en si alcanzar valores cercanos a la unidad.\\
+%, es por eso que los valores mostrados del traslape $\Omega<1$.\\
+
+En ambos algoritmos la generación de sitios y enlaces se basa en las distribuciones $F_S(R_S)$ y $F_B(R_B)$. Ambos algoritmos propuestos  tienen tres grandes fases principales: inicialización de la red porosa con sitios y enlaces, la generación de una red porosa válida y el mejoramiento de la isotropía. La diferencia principal entre ambos algoritmos radica en el fase de inicialización, en donde la primera solución llamada Solución Aleatoria($SA$) inserta de forma aleatoria sitios y enlaces hasta inicializar toda la red porosa mientras que la segunda solución llamada Solución Híbrida($SH$) inserta grupos de sitios (clusters) a lo largo de la red y posterior mente se les asignan enlaces a los sitios intentando siempre cumplir con el $PC$ y las $RG$.\\
+
+Después de la fase de inicialización, es posible que ambos algoritmos dieran como resultado redes porosas que tienen violaciones a las $RG$ el número de violaciones a las $RG$ dependerá directamente del valor del traslape ($\Omega$), por lo que  la segunda fase consiste en la eliminación de dichas violaciones utilizado el Método de Monte Carlo. Por último, la tercera fase se  encarga del mejoramiento de la isotropía de las redes porosas haciendo uso de igual manera del Método de Monte Carlo. A continuación se describe a detalle cada algoritmo.
+
+%Como se ha dicho anteriormente, una red porosa válida es aquella que se encuentra libre de violaciones a las $RG$. En la primera fase  el primer algoritmo . Por otra parte, la inicialización del segundo  algoritmo primero asigna los sitios a la red basándose en el método de sembrado del algoritmo secuencial NoMISS; la diferencia ahora es que  los sitios que conforman a los clusters no tienen enlaces asignados. Es inmediatamente después del sembrado que el segundo algoritmo comienza  a asignar enlaces a los sitios, siguiendo la regla de intentar conectar siempre a cada sitio los enlaces de mayor tamaño posible.  Después de la fase de inicialización, es posible que ambos algoritmos hayan generado redes porosas que tienen violaciones a las $RG$, por lo que  la segunda fase consiste en la eliminación de dichas violaciones utilizado el Método de Monte Carlo. Por último, la tercera fase se  encarga del mejoramiento de la isotropía de las redes porosas. A continuación se describe a detalle cada algoritmo. 
+
+%\section{Solución Aleatoria}
+%En la presente sección se muestra el algoritmo secuencial llamado Solución Aleatoria($SA$) con sus respectivas 3 fases.
 
 
-En este capítulo se describen dos algoritmos secuenciales para la creación de redes porosas sujetas a restricciones geométricas. 
-En ambos algoritmos la generación de sitios y enlaces se basa en las distribuciones $F_S(R_S)$ y $F_B(R_B)$. Ambos algoritmos propuestos 
-se pueden separar en tres grandes fases: inicalizaci\'on de la red porosa con sitios y enlaces, la generación de una red porosa v\'alida y
-el mejoramiento de la isotrop\'ia. 
-Como se ha dicho anteriormente, una red porosa v\'alida es aquella que se encuentra libre de violaciones a las $RG$. En la primera fase 
-el primer algoritmo inserta de forma aleatoria sitios y enlaces hasta inicializar toda la red. Por otra parte, la inicialización del segundo 
-algoritmo primero asigna los sitios a la red basándose en el método de sembrado del algoritmo secuencial NoMISS; la diferencia ahora es que 
-los sitios que conforman a los clusters no tienen enlaces asignados. Es inmediatamente después del sembrado que el segundo algoritmo comienza 
-a asignar enlaces a los sitios, siguiendo la regla de intentar conectar siempre a cada sitio los enlaces de mayor tamaño posible. 
-Después de la fase de inicalizaci\'on, es posible que ambos algoritmos hayan generado redes porosas que tienen violaciones a las $RG$, por lo que 
-la segunda fase consiste en la eliminaci\'on de dichas violaciones utilizado el Método de Monte Carlo. Por \'ultimo, la tercera fase se 
-encarga del mejoramiento de la isotrop\'ia de las redes porosas. A continuación 
-se describe a detalle cada algoritmo. 
-
-
-\section{Solución Básica Aleatoria basada en el Método de Monte Carlo: Inicializaci\'on}
+\section{Solución Aleatoria}
 \label{sec:smcrg}
-Este algoritmo tiene por objetivo inicializar la red porosa con sitios y enlaces de forma aleatoria en dos pasos, en el primer paso 
-se generan e insertan en la red porosa $L^3$ tamaños de radio de sitios, en base a la distribución $F_S(R_S)$; conforme se van 
-generando los sitios \'estos 
-se insertan en la red porosa. El segundo paso consiste en conectar tres enlaces a cada sitio de la red porosa; cada enlace es generado 
-en base a la distribución $F_B(R_B)$ y al final tendremos $3 \cdot L^3$ enlaces dentro de la red porosa.\\
-%Después de la inicailizaci\'on se aplica el Método de Monte Carlo sobre la red hasta eliminar todas las violaciones a las $RG$ tal y como se describe mas adelante en la sección \ref{sec:svalid}.\\
+En esta sección se describe el algoritmo de inicialización para la Solución Aleatoria($SA$), este algoritmo tiene por objetivo inicializar la red porosa con sitios y enlaces de forma aleatoria en dos pasos, en el primer paso  se generan e insertan en la red porosa $L^3$ tamaños de radio de sitios, con base en la distribución $F_S(R_S)$; conforme se van  generando los sitios éstos  se insertan en la red porosa. El segundo paso consiste en conectar tres enlaces a cada sitio de la red porosa; cada enlace es generado  con base en la distribución $F_B(R_B)$ y al final tendremos $3 \cdot L^3$ enlaces dentro de la red porosa. Al finalizar esta fase se obtendrá una red porosa que puede tener violaciones a las $RG$, el número de violaciones depende directamente del valor del traslape($\Omega$).\\
+%Después de la inicailización se aplica el Método de Monte Carlo sobre la red hasta eliminar todas las violaciones a las $RG$ tal y como se describe mas adelante en la sección \ref{sec:svalid}.\\
 
-Cabe destacar que aun cuando se le asignaron solo tres enlaces a cada sitio, la conectividad de estos sigue siendo igual a seis
- debido a que los otros tres enlaces los comparte con sus sitios vecinos siguiendo una topología tipo toro, tal y como se muestra 
-en la Figura \ref{fig:redinit}. Se puede apreciar que al sitio de color gris obscuro le comparten un enlace cada uno de 
-sus sitios vecinos que están representados en color gris claro, a su vez el sito de color gris obscuro le comparte sus enlaces 
-a los sitios que se encuentran en la posición frente-inferior-derecho, trasero-superior-derecho y frente-superior-izquierdo de la red porosa.
-
+Cabe destacar que aun cuando se le asignaron solo tres enlaces a cada sitio, la conectividad de estos sigue siendo igual a seis debido a que los otros tres enlaces los comparte con sus sitios vecinos siguiendo una topología tipo toro, tal y como se muestra  en la Figura \ref{fig:redinit}. Se puede apreciar que al sitio de color gris obscuro le comparten un enlace cada uno de  sus sitios vecinos que están representados en color gris claro, a su vez el sitio de color gris obscuro le comparte sus enlaces  a los sitios que se encuentran en la posición frente-inferior-derecho, trasero-superior-derecho y frente-superior-izquierdo de la red porosa.\\
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=2.8in]{img/red2.pdf}
-\caption{Red porosa inicalizada con $L^3$ sitios y $3 \cdot L^3$ enlaces, con L=3.}
+\caption{Red porosa inicializada con $L^3$ sitios y $3 \cdot L^3$ enlaces, con L=3.}
 \label{fig:redinit}
 \end{figure}
-
-
   
-\section{Solución Híbrida: Inicializaci\'on}
+\section{Solución Híbrida}
 \label{sec:hybrid}
-El algoritmo que se presenta a continuación \cite{ref17} inicializa una red porosa con sitios y enlaces donde se intenta que 
-la conexi\'on entre estos cumpla con las $RG$. La primera acción del algoritmo es crear dos listas de tamaños de poros ordenadas 
-de forma descendente (con base al tamaño de los sitios y enlaces, respectivamente) mediante un algoritmo de ordenamiento por inserción. 
-De esta manera, el primer sitio/enlace de cada lista es el que tiene el mayor tamaño respecto a los otros elementos subsecuentes.
-La primera lista $L_S$ se compone de $L^3$ radios de sitios, mientras que la segunda, $L_B$, contiene $3L^3$ enlaces. Despu\'es de 
-la creaci\'on de  las listas se lleva acabo el proceso de sembrado y rellenado de sitios basado en el algoritmo NoMISS descrito 
-en la Sección \ref{subsubsec:nomiss}. Al finalizar esta parte, sigue el proceso de asignación de enlaces a los sitios. 
-A continuación se describe a detalle el algoritmo.
+En la presente sección se describe el algoritmo de inicialización para la Solución Híbrida($SH$), el algoritmo que se presenta a continuación inicializa una red porosa con sitios y enlaces donde se intenta que la conexión entre estos cumpla con las $RG$. La primera acción del algoritmo es crear dos listas de tamaños de poros ordenadas de forma descendente (con base al tamaño de los sitios y enlaces, respectivamente) mediante un algoritmo de ordenamiento por inserción.  De esta manera, el primer sitio/enlace de cada lista es el que tiene el mayor tamaño respecto a los otros elementos subsecuentes.\\
+
+La primera lista $L_S$ se compone de $L^3$ radios de sitios, mientras que la segunda, $L_B$, contiene $3L^3$ enlaces. Después de la creación de las listas se lleva acabo el proceso de sembrado y rellenado de sitios similar al procedimiento que realiza el algoritmo NoMISS descrito en la Sección \ref{subsubsec:nomiss}. Al finalizar esta parte, sigue el proceso de asignación de enlaces a los sitios.  A continuación se describe a detalle el algoritmo.
 
 %En este algoritmo se propone una nuevo algoritmo para la construcción de redes porosas sujetas a $RG$ el cual a diferencia del algoritmo de la sección anterior que inicializa de forma aleatoria toda la red porosa por lo cual no se validan las $RG$, en algoritmo descrito en esta sección a cada sitio se intenta conectar con los enlace más grandes posibles y intentar que se cumplan con las $RG$, cabe destacar que es posible que una conexión no cumpla con las $RG$ para lo cual y de igual forma que en el algoritmo de la sección anterior aplicaremos el Método de Monte Carlo hasta eliminar las violaciones a las $RG$. En este algoritmo se intenta mejorar la isotropía a partir de la inicialización por lo cual se lleva acabo un proceso de sembrado y rellenado similar al aplicado en el algoritmo NoMISS descrito en la sección \ref{subsubsec:nomiss}. A continuación se describe de forma detalla los pasos que conforman el algoritmo. 
 
 %\subsection{Generación de Sitios y Enlaces}
 %\label{subsec:hybridgse}
-%En este paso, se generan dos listas de tamaños de poros ordenadas de forma descendente(en base al tamaño de los sitios o enlaces respectivamente) mediante un algoritmo de ordenamiento por inserción. La primera lista $L_S$ se compone de $L^3$ sitios mientras que la segunda $L_B$ contiene $3L^3$ enlaces.
+%En este paso, se generan dos listas de tamaños de poros ordenadas de forma descendente(con base al tamaño de los sitios o enlaces respectivamente) mediante un algoritmo de ordenamiento por inserción. La primera lista $L_S$ se compone de $L^3$ sitios mientras que la segunda $L_B$ contiene $3L^3$ enlaces.
 
-\subsection{Sembrado de Clusters de Sitios}
+\subsection{Sembrado de Clusters de sitios}
 \label{subsec:sseeding}
 Durante todo el proceso de sembrado y rellenado de sitios en la red porosa cada vez que se toma un elemento de la lista $L_S$ 
 se hace referencia a que se toma el primer elemento actual de $L_S$, siendo este el sitio actual más grande.\\
-El proceso de sembrado de clusters se divide en dos pasos el primer paso consiste en tomar el primer sitio (semilla) de la lista $L_S$ e 
+El proceso de sembrado de clusters se divide en dos pasos, el primero consiste en tomar el primer sitio (semilla) de la lista $L_S$ e 
 insertarlo en una posición aleatoria de la red porosa. El segundo paso consiste en tomar más elementos de $L_S$ y uno a uno insertarlos 
 alrededor de la semilla actual hasta crear un cluster de sitios de tamaño $ClusterSize$, el cual tendrá la forma de un cubo; este 
 procedimiento se describe en las lineas 1-6 del Algoritmo \ref{alg:seedingalg}. En la Figura \ref{fig:cluster} se muestra de forma 
 gráfica la creación de un cluster donde $ClusterSize=3$.\\
 
 Cada vez que se inserta un elemento de $L_S$ en una posición aleatoria $(i,j,k)$ de la red, dicha posición se almacena en 
-la lista $L_{SC}$ que se mantiene ordenada de forma descendente en base al tamaño de los sitios insertados. El procedimiento de 
+la lista $L_{SC}$ que se mantiene ordenada de forma descendente con base al tamaño de los sitios insertados. El procedimiento de 
 inserción de semillas y la creación de un cluster de tamaño $ClusterSize$ alrededor de cada semilla se repite $p$ veces, donde $p$ 
-es el n\'umero de clusters a insertar. En caso que durante la creación de los clusters exista un traslape entre ellos, el sembrado 
+es el número de clusters a insertar. En caso que durante la creación de los clusters exista un traslape entre ellos, el sembrado 
 se omite en las posiciones ya ocupadas (en las que existe traslape) y se continua el sembrado de los sitios en los espacios aun vacíos.\\
 
 \begin{figure}[hbtp]
@@ -91,12 +86,12 @@ En la Figura \ref{fig:cluster1} se representa una red porosa después del proces
 También se puede observar que en la red quedan espacios vacíos  los cuales serán rellenados de la siguiente forma: una vez completado
 el proceso de siembra de clusters, al primer cluster generado se le insertan alrededor suyo todos los sitios restantes de $L_S$ 
 (lineas 7-9 del Algoritmo \ref{alg:seedingalg}) siguiendo las mismas reglas de construcción de cluster anteriores, con la diferencia 
-de que se establece $ClusterSize=L$. Con esto se garantiza que todos los espacios vacíos de la red porosa ser\'an inicializados.\\
+de que se establece $ClusterSize=L$. Con esto se garantiza que todos los espacios vacíos de la red porosa serán inicializados.\\
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=3.0in]{img/cluster1.pdf}
-\caption{Red Porosa después del proceso de siembra de clusters}
+\caption{Red porosa después del proceso de siembra de clusters}
 \label{fig:cluster1}
 \end{figure}
 
@@ -124,11 +119,11 @@ los sitios insertados durante el sembrado y rellenado no tienen aún enlaces asi
 
 \subsection{Asignación de Enlaces}
 \label{subsec:sbonds}
-La asignación de enlaces consiste en asignar 6 enlaces, primero a los sitos más grandes, luego se contin\'ua con los sitios más pequeños de 
-la red. Para este fin, los elementos de la lista $L_{SC}$ son tomados uno a uno desde la primera posición de la lista. Como se mencion\'o 
+La asignación de enlaces consiste en asignar 6 enlaces, primero a los sitios más grandes, luego se continúa con los sitios más pequeños de 
+la red. Para este fin, los elementos de la lista $L_{SC}$ son tomados uno a uno desde la primera posición de la lista. Como se mencionó 
 anteriormente, cada elemento de $L_{SC}$ contiene la posición en la cual cada sitio fue asignado dentro de la red porosa, y el orden de 
-los elementos es descendente en base al tamaño de los sitios. Entonces el primer elemento de la lista siempre almacenar\'a la posición 
-dentro de la red del sitio más grande de la lista. Cuando una posici\'on es tomada de $L_{SC}$, se le intenta conectar $C=6$ enlaces 
+los elementos es descendente con base al tamaño de los sitios. Entonces el primer elemento de la lista siempre almacenará la posición 
+dentro de la red del sitio más grande de la lista. Cuando una posición es tomada de $L_{SC}$, se le intenta conectar $C=6$ enlaces 
 al sitio en dicha posición; los enlaces son tomados de la lista $L_B$, intentando usar los enlaces de mayor tamaño primero. Cada uno 
 de los $C$ enlaces conectados a los sitios debería cumplir con el $PC$ y las $RG$. Si el primer enlace de $L_B$ no permite que se cumplan
 las restricciones respecto a los enlaces previamente asignados al sitio, se intenta tomar al siguiente enlace en la lista, así hasta encontrar
@@ -145,32 +140,32 @@ este comportamiento.\\
 \While{\Call{Size}{$L_{SC}$} $> 0$}
 	\State $(i,j,k)\gets $\Call{First}{$L_{SC}$} {$//$ se retira el primer elemento de la lista}
 	\For{$p\gets 1$ \textbf{to} $C$} {$//\;C=6$ para una red cúbica}
-		\State \Call{AssigneBondsRG}{$pnet,i,j,k,p,\&L_B$}
+		\State \Call{AssignBondRG}{$pnet,i,j,k,p,\&L_B$}
 	\EndFor
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
 
-\section{Generación de una red porosa válida}
+\section{Generación de una Red Porosa válida}
 \label{sec:svalid}
 
 
 Una vez que la red porosa ha sido inicializada por completo, ya sea con el algoritmo de la Solución Básica Aleatoria 
  o con el de la Solución Híbrida, la red porosa puede tener violaciones a las $RG$.
-Como se explic\'o anteriormente, la Solución Básica Aleatoria no verifica el cumplimiento de las $RG$ al asignar un enlace a 
+Como se explicó anteriormente, la Solución Básica Aleatoria no verifica el cumplimiento de las $RG$ al asignar un enlace a 
 un sitio debido a que es un método completamente aleatorio. Por otra parte, la Solución Híbrida intenta conectar los enlaces grandes 
-con los sitio mas grandes posible, donde la conexión entre sitio y enlace cumplan con las $RG$; sin embargo, existen casos 
+con los sitios mas grandes posibles, donde la conexión entre sitio y enlace cumplan con las $RG$; sin embargo, existen casos 
 en los cuales no es posible que se cumplan las $RG$ y por consiguiente la conexión provoca violaciones a las $RG$. 
-Cabe destacar que para ambos algoritmos, el número de violaciones a las $RG$ est\'a directamente relacionado con el 
-valor del traslape ($\Omega$).\\
+Cabe destacar que para ambos algoritmos, el número de violaciones a las $RG$ está directamente relacionado con el 
+valor del traslape.\\
 
 %Una vez que la red porosa ha sido inicializada por completo con los sitios y enlaces ya sea con el algoritmo Solución Básica Aleatoria o con la Solución Híbrida la red porosas puede tener violaciones a las $RG$ esto se debe a que en el algoritmo Solución Básica Aleatoria no se verifica el cumplimiento de las $RG$ en la asignación de enlaces ya que es un método completamente aleatorio, por el contrario el algoritmo Solución Híbrida durante la asignación de enlaces este intenta conectar los enlaces de tal forma que cumplan con las $RG$ haciendo que los enlaces más grandes se conecten con los sitios más grandes sin embargo existen casos en los cuales no es posible realizar esta acción y por consiguiente pueden existir violaciones a las $RG$. Cabe destacar que el número de violaciones a las $RG$ esta directamente relacionado con el traslape($\Omega$).\\
 
 
-Para eliminar las violaciones al $PC$ y $RG$ los algoritmos aplican un n\'umero sucesivo de pasos de Monte Carlo, hasta obtener 
-una red v\'alida, tal y como lo hace el algoritmo secuencial BiaSED 
+Para eliminar las violaciones al $PC$ y $RG$ los algoritmos aplican un número sucesivo de pasos de Monte Carlo, hasta obtener 
+una red válida, tal y como lo hace el algoritmo secuencial BiaSED 
 descrito en la Sección \ref{subsubsec:biased}. A diferencia del algoritmo BiaSED, los algoritmos previamente descritos 
- en las secciones \ref{sec:smcrg} y \ref{sec:hybrid} tambi\'en consideran el cumplimiento 
+ en las Secciones \ref{sec:smcrg} y \ref{sec:hybrid} también consideran el cumplimiento 
 de $RG$ en cada uno de los intercambios de poros, si esto no ocurre, el intercambio es rechazado. La fase para la generación de una 
 red porosa válida termina cuando todos los poros en la red cumplen tanto con el $PC$ como con las $RG$, como se muestra en 
 el Algoritmo \ref{alg:validnet}.\\
@@ -192,8 +187,7 @@ el Algoritmo \ref{alg:validnet}.\\
 En las Figuras \ref{fig:mcs} y \ref{fig:mcsb} se muestra un ejemplo del intercambio válido entre dos sitios y entre dos enlaces 
 respectivamente. En las Figuras \ref{fig:mcsc} y \ref{fig:mcsbc} se muestra un ejemplo de intercambio inválido entre dos sitios y entre 
 dos enlaces, respectivamente. El tiempo que lleva el proceso de eliminación de violaciones al $PC$ y $RG$ varia dependiendo 
-del traslape($\Omega$) entre las distribuciones utilizadas para generar a los tamaños de sitios como de los enlaces de la red porosa 
-y si este mismo es muy grande puede que el algoritmo \ref{alg:validnet} no termine.
+del traslape entre las distribuciones utilizadas para generar a los tamaños de sitios como de los enlaces de la red porosa, y si este mismo es muy grande puede que el Algoritmo \ref{alg:validnet} no termine.
 
 
 \section{Mejoramiento de la isotropía}
@@ -261,3 +255,23 @@ depende directamente del traslape($\Omega$) entre sitios y enlaces.
 \label{fig:mcsbc}
 \end{figure}
 
+%En este capítulo se describen dos algoritmos para la creación de redes porosas sujetas a restricciones geométricas. En ambos algoritmos la generación de sitios y enlaces se basa en las distribuciones $F_S(R_S)$ y $F_B(R_B)$. La primera propuesta esta basada puramente en el Método de Monte Carlo para la generación de redes porosas que cumplan con las restricciones geométricas. El segundo algoritmo propuesto tanto los sitios como los enlaces son generados y ordenados de forma descendente en dos listas respectivamente, de igual forma existe un proceso de sembrado de semillas para la generación de clusters dicho proceso se basa en la asignación de sitios de mayor tamaño primero, los sitios asignados a la red porosa no tienen ningún enlace conectado a diferencia del algoritmo secuencial de NoMISS donde los sitios semilla debían tener sus seis enlaces conectados. Después del proceso de sembrado comienza la asignación de enlaces donde en el primer algoritmo la asignación es puramente aleatoria, el segundo algoritmo se intenta conectar cada enlace con el sitio mas grande posible. Detallamos cada algoritmo en las siguientes secciones.
+
+%Es evidente que el valor del traslape $\Omega$ alcanzado en las redes que consideran el cumplimiento del $PC$ y las $RG$, es relativamente bajo ($\Omega<1$). Este hecho se debe a la restricción impuesta por las restricciones geométricas. Esto último se ilustra en las ecuaciones \ref{eq:eq02} y \ref{eq:eq03}:
+%
+%\begin{equation}
+%B_C(R_S) \geq S(R_S)
+%\label{eq:eq02}
+%\end{equation}
+%
+%\begin{eqnarray}
+%\nonumber \\
+%B_C(R_S) = & \{\int\limits^{R_S} ... \int\limits_{0} F_B(R_{B1})\; ... \; F_B(R_{BC})dR_{B1} \nonumber \\
+%& \; \ldots \; dR_{BC} \}^{1/C}
+%\label{eq:eq03}
+%\end{eqnarray}
+%
+%donde $B_C(R_S)$ corresponde al volumen definido por la ecuación \ref{eq:eq03}; esta se relaciona con el conjunto de enlaces que pueden ser conectados a un sitio, evitando al mismo tiempo la existencia de interferencias entre ellos. $S(R_S)$ es la fracción de sitios que son de tamaño $R_S$ o más pequeños.\\
+%
+%Las ecuaciones \ref{eq:eq02} y \ref{eq:eq03} restringen el valor de traslape como se muestra en \cite{ref5}, ya que la definición matemática de $B_C(R_S)$ impide en si alcanzar valores cercanos a la unidad, es por eso que los valores mostrados del traslape $\Omega<1$.\\
+%
